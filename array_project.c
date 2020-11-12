@@ -2,11 +2,11 @@
 #include <time.h>
 #include <stdlib.h>
 
-
 int main(void)
 {
   srand(time(NULL));
   printf("\n\n === 아빠는 대머리 게임 === \n\n");
+
   int answer; // 사용자 입력값
   int treatment = rand() % 4; // 발모제 선택 (0 - 3)
 
@@ -17,13 +17,13 @@ int main(void)
   // 3번의 기회 (3번의 발모제 투여 시도)
   for (int i = 0; i <= 3; i++)
   {
-    int bottle[4] = {0,0,0,0}; // 4개의 병
+    int bottle[4] = { 0, 0, 0, 0}; // 4개의 병
     do {
       cntShowBottle = rand() % 2 + 2; // 보여줄 병 개수 (0~1, +2 -> 2, 3)
     } while (cntShowBottle == prevCntShowBottle);
     
-    int isIncluded = 0; // 보여줄 병 중에 발모제가 포함되어있는지 여부
-    printf(" > %d 번째 시도 : ", i);
+    int isIncluded = 0; // 보여줄 병 중에 발모제가 포함되어있는지 여부 (1 : 포함)
+    printf(" > %d 번째 시도 : ", i + 1);
 
     // 보여줄 병 종류를 선택
     for (int j = 0; j < cntShowBottle; j++)
@@ -50,7 +50,7 @@ int main(void)
     for (int k = 0; k < 4; k++)
     {
       if (bottle[k] == 1)
-          printf("%d ", k + 1);
+          printf("%d ", k);
     }
     printf("물약을 머리에 바릅니다.");
 
