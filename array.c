@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main(void)
+int main_array(void)
 {
   // 배열
   int subway_1 = 30;
