@@ -15,15 +15,16 @@ int main(void)
   // 서로 보여주는 병 개수를 다르게 하여 정답률 향상 (처음에 2개 -> 다음엔 3개...)
 
   // 3번의 기회 (3번의 발모제 투여 시도)
-  for (int i = 0; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     int bottle[4] = { 0, 0, 0, 0}; // 4개의 병
     do {
       cntShowBottle = rand() % 2 + 2; // 보여줄 병 개수 (0~1, +2 -> 2, 3)
     } while (cntShowBottle == prevCntShowBottle);
-    
+    prevCntShowBottle = cntShowBottle;
+
     int isIncluded = 0; // 보여줄 병 중에 발모제가 포함되어있는지 여부 (1 : 포함)
-    printf(" > %d 번째 시도 : ", i + 1);
+    printf(" > %d 번째 시도 : ", i);
 
     // 보여줄 병 종류를 선택
     for (int j = 0; j < cntShowBottle; j++)
