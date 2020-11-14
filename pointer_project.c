@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
 
-  // 물고기 6마리가 있다.
-  // 이들은 어항에 살고 있는데, 사막이다.
-  // 사막이 너무 더워서, 너무 건조해서 물이 빨리 증발한다.
-  // 물이 다 증발하기 전에 부지런히 어항에 물을 줘서 물고기를 살려주자
-  // 물고기는 시간이 지날수록 점점 커져서... 나중에는 ... 먹는다...
+// 물고기 6마리가 있다.
+// 이들은 어항에 살고 있는데, 사막이다.
+// 사막이 너무 더워서, 너무 건조해서 물이 빨리 증발한다.
+// 물이 다 증발하기 전에 부지런히 어항에 물을 줘서 물고기를 살려주자
+// 물고기는 시간이 지날수록 점점 커져서... 나중에는 ... 먹는다...
 
 int level;
 int arrayFish[6];
@@ -13,12 +14,14 @@ int * cursor;
 
 void initData();
 void printfFishes();
+void decreaseWater(long elapsedTime);
+int checkFishAlive();
 
-int main(void) 
+int main_pointer_project(void) 
 {
   long startTime = 0; // 게임 시작 시간
   long totalElapsedTime = 0; // 총 경과 시간
-  long prevElapsedTime = 0; 
+  long prevElapsedTime = 0;  // 직전 경과 시간 (최근에 물을 준 시간 간격)
 
   int num; // 몇 번 어항에 물을 줄 것 인지, 사용자 입력
   initData();
@@ -38,13 +41,59 @@ int main(void)
       printf("입력값이 잘못되었습니다.\n");
       continue;
     }
-
+    // 총 경과 시간
     totalElapsedTime = (clock() - startTime) / CLOCKS_PER_SEC;  // 초 단위로 바꿔주는 역할
-    printf("총 경과 시간 : %ld\n", totalElapsedTime); // long 이니까 ld
+    printf("총 경과 시간 : %ld 초\n", totalElapsedTime); // long 이니까 ld
 
     // 직전 물 준 시간 (마지막으로 물 준 시간) 이후로 흐른 시간
     prevElapsedTime = totalElapsedTime - prevElapsedTime;
     printf("최근 경과 시간 : %ld 초\n", prevElapsedTime);
+
+    // 어항의 물을 감소 (증발)
+    decreaseWater(prevElapsedTime);
+
+    // 사용자가 입력한 어항에 물을 준다
+    // 1. 어항의 물이 0 이면? 물을 주지 않는다. 이미 죽음.
+    if (cursor[num - 1] <= 0)
+    {
+      printf("%d 번 물고기는 이미 죽었습니다. 물을 주지 않습니다\n", num);
+    }
+    // 2. 어항의 물이 0 이 아니다 ? 물은 준다. 100을 넘지 않는지 체크
+    else if (cursor[num - 1] + 1 <= 100)
+    {
+      // 물을 준다
+      printf("%d번 어항에 물을 준다\n\n", num);
+      cursor[num - 1] += 1;
+    }
+
+    // 레벨업을 할건지 확인 (레벨업은 20초마다 한 번씩 수정)
+    if (totalElapsedTime / 20 > level - 1)
+    {
+      // 레벨업
+      level++; // level : 1 -> level : 2 -> level : 3...
+      printf("=== 축! 레벨업 ! 기존 %d 레벨에서 %d 레벨로 업그레이드 === \n\n", level - 1, level);
+      // 최종 레벨 : 5
+      if (level == 5)
+      {
+        printf("=== 축하합니다 ! 최고레벨을 달성하였습니다. 게임을 종료합니다. === \n\n");
+        exit(0);
+      }
+    }
+    // 모든 물고기가 죽었는지 확인
+  if (checkFishAlive() == 0)
+  {
+    // 물고기가 모두 다 죽음
+    printf("모든 물고기가 죽었어요\n\n");
+    exit(0);
+  }
+  else 
+  {
+    // 최소 한 마리 이상이 살아있음
+    printf("물고기가 아직 살아 있어요\n\n");
+  }
+  prevElapsedTime = totalElapsedTime;
+
+  // 10 초 -> 15 초 (5초 : prevElapsedTime -> 15 초 ) -> 25 초 (10초..?)
   }
   
   return 0;
@@ -67,4 +116,26 @@ void printfFishes()
      printf("  %3d ", arrayFish[i]);
   }
   printf("\n\n");
+}
+
+void decreaseWater(long elapsedTime)
+{
+  for (int i = 0; i < 6; i++)
+  {
+    arrayFish[i] -= (level * 3 * (int)elapsedTime); // 3 : 난이도 조절을 위한 값
+    if (arrayFish[i] < 0)
+    {
+      arrayFish[i] = 0;
+    }
+  }
+}
+
+int checkFishAlive()
+{
+  for (int i = 0; i < 6; i++)
+  {
+    if (arrayFish[i] > 0)
+      return 1; // 참
+  }
+  return 0;
 }
