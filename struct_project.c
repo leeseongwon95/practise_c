@@ -25,7 +25,7 @@ CAT cats[5];
 void initCats(); // 고양이 정보 초기화
 void printCat(int selected);
 int checkCollection();
-int main(void)
+int main_struct_project(void)
 {
   srand(time(NULL));
 
